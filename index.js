@@ -1,16 +1,16 @@
-import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import "dotenv/config";
+import { connectToMongoDB } from "./config/db.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
-import { requireAuth, requireRole } from "./middleware/auth.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 
-app.all("/api/auth/*splat", toNodeHandler(auth)); // if you're on Express 4, use "/api/auth/*"
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
 
@@ -18,13 +18,12 @@ app.get("/", (req, res) => {
   res.send("Welcome to ResQLink server!");
 });
 
-app.get("/api/me", requireAuth, (req, res) => res.json(req.user));
-app.get("/api/admin/ping", requireAuth, requireRole("admin"), (req, res) =>
-  res.json({ ok: true })
-);
+async function startServer() {
+  await connectToMongoDB();
 
-app.listen(port, () => {
-  console.log(`ResQLink app listening to port ${port}...`);
-});
+  app.listen(port, () => {
+    console.log(`ResQLink server listening on port ${port}...`);
+  });
+}
 
-export default app;
+startServer();

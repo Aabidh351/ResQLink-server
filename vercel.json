@@ -1,0 +1,10 @@
+{
+  "$schema": "https://vercel.sh",
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ]
+}
