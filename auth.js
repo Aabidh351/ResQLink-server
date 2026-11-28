@@ -27,9 +27,19 @@ export const auth = betterAuth({
   },
 
   plugins: [
-    expo(),
-    jwt(),
-  ],
+  expo(),
+  jwt({
+    jwt: {
+      definePayload: ({ user }) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || null,
+      role: user.role,
+      }),
+    },
+  }),
+],
 
   trustedOrigins: [
     "resqlink://",
